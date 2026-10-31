@@ -1,0 +1,4 @@
+# Keep line endings identical on every operating system (LF).
+# Without this, Git on Windows can rewrite the CSV files with CRLF endings, and the
+# test that checks the committed data against the generator would fail.
+* text=auto eol=lf

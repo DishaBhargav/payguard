@@ -1,0 +1,70 @@
+case,source_line,transaction_id,expected_result,expected_flags,note
+bad_empty_transaction_id,12,,rejected,,transaction_id is empty
+duplicate_first_occurrence,23,TX0021,accepted,,first use of this ID is accepted; later rows reusing it are rejected
+bad_empty_account_id,25,TX9002,rejected,,account_id is empty
+hv_below_threshold,35,TX0032,accepted,,999.99 is not above 1000.00
+bad_timestamp_impossible,38,TX9003,rejected,,"timestamp has impossible month, day and hour values"
+hv_exact_threshold,39,TX0035,accepted,,exactly 1000.00 is not above 1000.00
+hv_above_threshold,43,TX0039,accepted,HIGH_VALUE,1000.01 is above 1000.00
+hv_declined_attempt,44,TX0040,accepted,HIGH_VALUE,declined attempts are checked by this rule
+duplicate_changed_amount,50,TX0021,rejected,,ID already used by an accepted row; 5000.00 must not be counted or flagged
+bad_timestamp_format,52,TX9004,rejected,,timestamp is not in YYYY-MM-DD HH:MM:SS format
+duplicate_first_occurrence,61,TX0055,accepted,,first use of this ID is accepted; later rows reusing it are rejected
+bad_amount_text,65,TX9005,rejected,,amount is not a number
+duplicate_exact_copy,77,TX0055,rejected,,exact copy of an accepted row; rejected so it is not counted twice
+bad_amount_negative,79,TX9006,rejected,,amount is negative
+bad_amount_nan,92,TX9007,rejected,,"amount is NaN, which is not a finite number"
+bad_amount_infinity,105,TX9008,rejected,,"amount is Infinity, which is not a finite number"
+bad_row_then_valid_same_id,106,TX0095,rejected,,amount is not a number; rejecting it leaves the ID unclaimed
+valid_row_after_rejected_same_id,107,TX0095,accepted,,"accepted: the earlier row with this ID was rejected, so it never claimed the ID"
+bad_amount_inf_short,119,TX9009,rejected,,"amount is inf, which is not a finite number"
+bad_amount_empty,132,TX9010,rejected,,amount is missing
+vel_exactly_5_minutes,142,TX0128,accepted,VELOCITY,3 transactions spanning exactly 5:00 fit the window
+vel_one_second_outside,143,TX0129,accepted,,3 transactions spanning 5:01 do not fit one window
+bad_status_unsupported,145,TX9011,rejected,,status refunded is not an allowed status
+vel_exactly_5_minutes,146,TX0131,accepted,VELOCITY,3 transactions spanning exactly 5:00 fit the window
+vel_one_second_outside,147,TX0132,accepted,,3 transactions spanning 5:01 do not fit one window
+vel_exactly_5_minutes,148,TX0133,accepted,VELOCITY,3 transactions spanning exactly 5:00 fit the window
+vel_one_second_outside,149,TX0134,accepted,,3 transactions spanning 5:01 do not fit one window
+vel_burst_then_stray,151,TX0136,accepted,VELOCITY,"burst of 3, then a stray transaction 7 minutes later"
+vel_burst_then_stray,152,TX0137,accepted,VELOCITY,"burst of 3, then a stray transaction 7 minutes later"
+vel_burst_then_stray,153,TX0138,accepted,VELOCITY,"burst of 3, then a stray transaction 7 minutes later"
+vel_burst_then_stray,154,TX0139,accepted,,"burst of 3, then a stray transaction 7 minutes later"
+bad_merchant_empty,158,TX9012,rejected,,merchant is missing
+vel_rolling_chain,159,TX0143,accepted,VELOCITY,overlapping windows: no single window holds all five
+vel_rolling_chain,160,TX0144,accepted,VELOCITY,overlapping windows: no single window holds all five
+vel_rolling_chain,161,TX0145,accepted,VELOCITY,overlapping windows: no single window holds all five
+vel_rolling_chain,162,TX0146,accepted,VELOCITY,overlapping windows: no single window holds all five
+vel_rolling_chain,164,TX0148,accepted,VELOCITY,overlapping windows: no single window holds all five
+vel_declined_burst,168,TX0152,accepted,VELOCITY,declined attempts count towards velocity
+vel_declined_burst,169,TX0153,accepted,VELOCITY,declined attempts count towards velocity
+vel_declined_burst,170,TX0154,accepted,VELOCITY,declined attempts count towards velocity
+bad_row_too_short,171,TX9013,rejected,,row has 5 of 6 fields; status is missing
+vel_same_second,174,TX0157,accepted,VELOCITY,identical timestamps still count
+vel_same_second,175,TX0158,accepted,VELOCITY,identical timestamps still count
+vel_same_second,176,TX0159,accepted,VELOCITY,identical timestamps still count
+vel_only_two,180,TX0163,accepted,,2 transactions are below the minimum count of 3
+vel_only_two,182,TX0165,accepted,,2 transactions are below the minimum count of 3
+vel_across_midnight,220,TX0203,accepted,VELOCITY,the window ignores calendar days
+vel_across_midnight,221,TX0204,accepted,VELOCITY,the window ignores calendar days
+vel_across_midnight,222,TX0205,accepted,VELOCITY,the window ignores calendar days
+daily_exactly_threshold,252,TX0235,accepted,,"total is exactly 3000.00, not above it"
+daily_just_over,253,TX0236,accepted,HIGH_DAILY_SPEND,total is 3000.01; the 1000.01 row is also above the high-value threshold
+daily_declined_excluded,254,TX0237,accepted,,approved total is 2700.00; the declined row is not counted
+daily_split_across_days,255,TX0238,accepted,,2000.00 on each day; days are never combined
+daily_exactly_threshold,263,TX0246,accepted,,"total is exactly 3000.00, not above it"
+daily_just_over,264,TX0247,accepted,HIGH_DAILY_SPEND,total is 3000.01; the 1000.01 row is also above the high-value threshold
+daily_declined_excluded,265,TX0248,accepted,,approved total is 2700.00; the declined row is not counted
+daily_split_across_days,272,TX0255,accepted,,2000.00 on each day; days are never combined
+daily_exactly_threshold,276,TX0259,accepted,,"total is exactly 3000.00, not above it"
+daily_just_over,277,TX0260,accepted,HIGH_VALUE;HIGH_DAILY_SPEND,total is 3000.01; the 1000.01 row is also above the high-value threshold
+daily_declined_excluded,278,TX0261,accepted,,approved total is 2700.00; the declined row is not counted
+daily_declined_excluded,286,TX0269,accepted,,approved total is 2700.00; the declined row is not counted
+daily_split_across_days,293,TX0276,accepted,,2000.00 on each day; days are never combined
+daily_split_across_days,304,TX0287,accepted,,2000.00 on each day; days are never combined
+multi_reason,330,TX0313,accepted,HIGH_VALUE;VELOCITY;HIGH_DAILY_SPEND,"one transaction, three reasons, one report row"
+multi_reason,331,TX0314,accepted,HIGH_VALUE;VELOCITY;HIGH_DAILY_SPEND,"one transaction, three reasons, one report row"
+multi_reason,332,TX0315,accepted,HIGH_VALUE;VELOCITY;HIGH_DAILY_SPEND,"one transaction, three reasons, one report row"
+status_uppercase,355,TX0338,accepted,,status APPROVED is accepted and normalised to lower case
+merchant_with_comma,359,TX0342,accepted,,a comma inside quotes must not split the field
+zero_amount,365,TX0348,accepted,,zero is allowed; only negative amounts are rejected

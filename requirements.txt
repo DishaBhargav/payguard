@@ -1,0 +1,2 @@
+# PayGuard uses only the Python standard library (Python 3.10 or newer).
+# There is nothing to install, so this file intentionally lists no packages.
